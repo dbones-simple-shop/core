@@ -10,14 +10,13 @@ jobs:
           command: |
             cd src
             ls
-            echo '1.0.${CIRCLE_BUILD_NUM}'
-            echo 1.0.$CIRCLE_BUILD_NUM
 
-
-            echo '1.0.${CIRCLE_BUILD_NUM}' >> version
-            echo hi
+            echo 1.0.$CIRCLE_BUILD_NUM >> version
             cat version
+
             APP_VERSION=$(cat version)
+            echo $APP_VERSION
+
             dotnet restore --packages packages
             dotnet build --no-restore --configuration Release /p:Version=${APP_VERSION}
             dotnet pack --no-build --no-restore --configuration Release --output ../nupkgs /p:Version=${APP_VERSION}

@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2
+    steps:
+      - checkout
+      - run:
+          name: build
+          command: |
+            cd src
+            ls
+            echo '1.0.$CIRCLE_BUILD_NUM' >> version
+            cat version
+            APP_VERSION=$(cat version)
+            dotnet restore --packages packages
+            dotnet build --no-restore --configuration Release /p:Version=${APP_VERSION}
+            dotnet pack --no-build --no-restore --configuration Release --output ../nupkgs /p:Version=${APP_VERSION}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - src/nupkgs
+            - src/version
+  publish:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2
+    steps:
+      - attach_workspace:
+          at: ./
+      - run: |
+          pwd
+          ls
+          cd src
+          ls
+          cat version
+          APP_VERSION=$(cat version)
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build

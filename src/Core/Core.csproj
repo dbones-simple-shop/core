@@ -27,9 +27,12 @@
       <PackageReference Include="MassTransit.OpenTracing" Version="0.0.1" />
       <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.5" />
       <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
       <PackageReference Include="OpenTracing" Version="0.12.0" />
       <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.6.0" />

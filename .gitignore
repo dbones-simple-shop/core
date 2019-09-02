@@ -3,3 +3,7 @@ nupkgs/
 src/Core/bin/
 src/Core/obj/
 src/packages/
+src/.vs/
+src/TestApp/bin/
+src/TestApp/obj/
+src/TestApp/TestApp.csproj.user

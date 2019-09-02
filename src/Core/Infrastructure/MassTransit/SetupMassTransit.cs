@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 
 namespace Core.Infrastructure.MassTransit
 {
+    using HealthCheck;
+
     public static class SetupMassTransit
     {
        
@@ -19,7 +21,12 @@ namespace Core.Infrastructure.MassTransit
         {
             webHostBuilder.ConfigureServices(services =>
             {
-	            var consumerTypes = Assembly
+                //healthcheck part 1
+                var busConnectionState = new MassTransitHealthCheckState();
+                services.AddSingleton(busConnectionState);
+
+
+                var consumerTypes = Assembly
 		            .GetEntryAssembly()
 		            .ExportedTypes
 		            .Where(x => !x.IsAbstract && typeof(IConsumer).IsAssignableFrom(x))
@@ -50,7 +57,7 @@ namespace Core.Infrastructure.MassTransit
 				            h.Username(busConfig.Username);
 				            h.Password(busConfig.Password);
 			            });
-			            
+                        
 			            cfg.PropagateOpenTracingContext();
 			            
 			            cfg.ReceiveEndpoint(host, busConfig.ReceiveEndpoint, e =>
@@ -59,7 +66,10 @@ namespace Core.Infrastructure.MassTransit
 				            e.ConfigureConsumer(provider, consumerTypes.ToArray());
 			            });
 
-		            }));
+                        //healthcheck part 2
+                        cfg.ConnectBusObserver(new HealthCheckBusObserver(busConnectionState));
+
+                    }));
 		            
 	            });  
 	            

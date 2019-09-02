@@ -33,11 +33,11 @@ jobs:
           at: ./
       - run: |
           pwd
-          ls
           cd src
+          cd nupkgs
           ls
-          cat version
           APP_VERSION=$(cat version)
+          dotnet nuget push *.nupkg -k $ -s https://www.myget.org/F/simple-shop/api/v2/package
 
 workflows:
   version: 2
@@ -45,5 +45,6 @@ workflows:
     jobs:
       - build
       - publish:
+        context: build-ctx
           requires:
             - build

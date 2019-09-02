@@ -37,7 +37,6 @@ jobs:
           cd src
           APP_VERSION=$(cat version)
           echo $APP_VERSION
-          cd ..
 
           cd nupkgs
           ls

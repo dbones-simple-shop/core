@@ -45,6 +45,6 @@ workflows:
     jobs:
       - build
       - publish:
-        context: build-ctx
+          context: build-ctx
           requires:
             - build

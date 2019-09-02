@@ -37,7 +37,7 @@ jobs:
           cd nupkgs
           
           ls
-          dotnet nuget push *.nupkg -k ${nuget-api} -s https://www.myget.org/F/simple-shop/api/v2/package
+          dotnet nuget push *.nupkg -k ${nuget-api} -s https://www.myget.org/F/simple-shop/api/v3/index.json
 
 workflows:
   version: 2

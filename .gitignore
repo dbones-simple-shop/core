@@ -2,3 +2,4 @@ nupkgs/
 *.suo
 src/Core/bin/
 src/Core/obj/
+src/packages/

@@ -36,7 +36,6 @@ jobs:
           cd src
           cd nupkgs
           ls
-          APP_VERSION=$(cat version)
           dotnet nuget push *.nupkg -k $nuget-api -s https://www.myget.org/F/simple-shop/api/v2/package
 
 workflows:

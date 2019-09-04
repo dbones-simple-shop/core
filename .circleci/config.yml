@@ -17,7 +17,9 @@ jobs:
             APP_VERSION=$(cat version)
             echo $APP_VERSION
 
-            dotnet pack --configuration Release --output ../nupkgs /p:Version=${APP_VERSION}
+            dotnet restore --packages packages
+            dotnet build --no-restore --configuration Release /p:Version=${APP_VERSION}
+            dotnet pack --no-build --no-restore --configuration Release --output ../nupkgs /p:Version=${APP_VERSION}
       - persist_to_workspace:
           root: .
           paths:

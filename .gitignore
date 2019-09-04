@@ -1,9 +1,7 @@
 nupkgs/
 *.suo
-src/Core/bin/
-src/Core/obj/
+bin/
+obj/
 src/packages/
-src/.vs/
-src/TestApp/bin/
-src/TestApp/obj/
-src/TestApp/TestApp.csproj.user
+.vs/
+*.csproj.user

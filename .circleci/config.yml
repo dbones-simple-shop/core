@@ -19,6 +19,8 @@ jobs:
 
             dotnet restore
             dotnet msbuild /target:Build /p:Configuration=Release /p:Version=${APP_VERSION}
+
+            mkdir ../nupkgs
             mv **/bin/**/*.nupkg ../nupkgs
             ls ../nupkgs
       - persist_to_workspace:

@@ -19,7 +19,7 @@ jobs:
 
             dotnet restore --packages packages
             dotnet build --no-restore --configuration Release /p:Version=${APP_VERSION}
-            dotnet pack --no-build --no-restore --configuration Release --output ../nupkgs /p:Version=${APP_VERSION}
+            dotnet pack --no-build --no-restore --configuration Release --output ../nupkgs
       - persist_to_workspace:
           root: .
           paths:

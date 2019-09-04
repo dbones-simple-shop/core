@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PackageId>TestLib</PackageId>
+    <PackageTitle>TestLib</PackageTitle>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>false</IncludeSource>

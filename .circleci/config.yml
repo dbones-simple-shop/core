@@ -35,8 +35,10 @@ jobs:
           pwd
           cd src
           cd nupkgs
-          
+
+          rm *.symbols.nupkg
           ls
+          
           dotnet nuget push *.nupkg -k ${nugetapi} -s https://www.myget.org/F/simple-shop/api/v3/index.json
 
 workflows:

@@ -1,4 +1,6 @@
-﻿namespace Core.Infrastructure.MassTransit.HealthCheck
+﻿using Microsoft.Extensions.Logging;
+
+namespace Core.Infrastructure.MassTransit.HealthCheck
 {
     using System;
     using System.Threading.Tasks;
@@ -10,10 +12,14 @@
     public class HealthCheckBusObserver : IBusObserver
     {
         private readonly MassTransitHealthCheckState _state;
+        private readonly ILogger<HealthCheckBusObserver> _logger;
 
-        public HealthCheckBusObserver(MassTransitHealthCheckState state)
+        public HealthCheckBusObserver(
+            MassTransitHealthCheckState state, 
+            ILogger<HealthCheckBusObserver> logger)
         {
             _state = state;
+            _logger = logger;
         }
 
         public Task PostCreate(IBus bus)
@@ -40,6 +46,7 @@
             busReady.ContinueWith(_ =>
             { 
                 _state.IsRunning = true;
+                _logger.LogInformation("connected to the bus");
             });
 
             return Task.CompletedTask;

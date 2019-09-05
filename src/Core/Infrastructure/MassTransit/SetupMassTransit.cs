@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Core.Infrastructure.MassTransit
 {
@@ -67,7 +68,8 @@ namespace Core.Infrastructure.MassTransit
 			            });
 
                         //healthcheck part 2
-                        cfg.ConnectBusObserver(new HealthCheckBusObserver(busConnectionState));
+                        ILogger<HealthCheckBusObserver> logger = provider.GetService<ILogger<HealthCheckBusObserver>>();
+                        cfg.ConnectBusObserver(new HealthCheckBusObserver(busConnectionState, logger));
 
                     }));
 		            

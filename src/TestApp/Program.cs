@@ -23,18 +23,19 @@ namespace TestApp
     {
         public static void Main(string[] args)
         {
-
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .AddCommandLine(args)
+                .AddJsonFile(Path.Combine("config", "stagesettings.json"), true)
                 .Build();
 
             var port = configuration.GetSection("Application").Get<ApplicationConfiguration>().PortNumber;
 
             var host = WebHost.CreateDefaultBuilder(args)
-
                 .UseConfiguration(configuration)
+                .ConfigureAppConfiguration(configBuilder =>
+                {
+                    configBuilder.AddJsonFile(Path.Combine("config", "stagesettings.json"), true);
+                })
                 .ConfigureLogging((hostingContext, builder) =>
                 {
                     builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));

@@ -1,15 +1,14 @@
-using System;
-using System.Reflection;
-using Jaeger;
-using Jaeger.Samplers;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using OpenTracing;
-using OpenTracing.Contrib.NetCore.CoreFx;
-using OpenTracing.Util;
-
 namespace Core.Infrastructure.Tracing
 {
+    using System;
+    using System.Reflection;
+    using Jaeger;
+    using Jaeger.Samplers;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using OpenTracing;
+    using OpenTracing.Contrib.NetCore.CoreFx;
+    using OpenTracing.Util;
     using Microsoft.Extensions.Configuration;
 
     public static class JaegerServiceCollectionExtensions
@@ -19,22 +18,34 @@ namespace Core.Infrastructure.Tracing
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
-            var tracingConfig = new TracingConfiguration();
-            configuration.GetSection("Tracing").Bind(tracingConfig);
-            var jaegerUri = new Uri($"http://{tracingConfig.JaegerUrl}:14268/api/traces");
-
             services.AddSingleton<ITracer>(serviceProvider =>
             {
+                var tracingConfig = new TracingConfiguration();
+                configuration.GetSection("Tracing").Bind(tracingConfig);
+
+                var jaegerUri = $"http://{tracingConfig.JaegerUrl}:14268/api/traces";
+
                 string serviceName = Assembly.GetEntryAssembly().GetName().Name;
-
                 ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                ITracer tracer;
 
-                ISampler sampler = new ConstSampler(sample: true);
+                if (!jaegerUri.ToString().Contains("localhost"))
+                {
+                    Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
+                    Environment.SetEnvironmentVariable("JAEGER_ENDPOINT", jaegerUri);
+                    Environment.SetEnvironmentVariable("JAEGER_SAMPLER_TYPE", "const");
+                    var config = Jaeger.Configuration.FromEnv(loggerFactory);
+                    tracer = config.GetTracer();
+                }
+                else
+                {
+                    ISampler sampler = new ConstSampler(sample: true);
 
-                ITracer tracer = new Tracer.Builder(serviceName)
-                    .WithLoggerFactory(loggerFactory)
-                    .WithSampler(sampler)
-                    .Build();
+                    tracer = new Tracer.Builder(serviceName)
+                        .WithLoggerFactory(loggerFactory)
+                        .WithSampler(sampler)
+                        .Build();
+                }
 
                 GlobalTracer.Register(tracer);
 
@@ -44,11 +55,11 @@ namespace Core.Infrastructure.Tracing
             // Prevent endless loops when OpenTracing is tracking HTTP requests to Jaeger.
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
-                options.IgnorePatterns.Add(request =>  request.RequestUri.ToString().Contains("/api/traces") 
-                                                       ||  jaegerUri.IsBaseOf(request.RequestUri));
+                options.IgnorePatterns.Add(request =>  request.RequestUri.ToString().Contains("/api/traces"));
             });
 
             return services;
         }
     }
+
 }

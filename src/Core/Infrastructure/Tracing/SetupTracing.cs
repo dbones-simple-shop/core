@@ -17,9 +17,9 @@ namespace Core.Infrastructure.Tracing
                 
 
                 if (tracingConfig.EnableOpenTracing)
-                {
+                { 
+                    services.AddOpenTracing();
                     services.AddJaeger(configuration);
-                    services.AddOpenTracing();   
                 }
             });
             

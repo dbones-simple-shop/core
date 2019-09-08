@@ -1,11 +1,7 @@
 ﻿namespace Core.Infrastructure.HealthChecks
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using global::MassTransit;
     using MassTransit.HealthCheck;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Diagnostics.HealthChecks;

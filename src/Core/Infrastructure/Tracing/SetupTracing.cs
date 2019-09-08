@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Infrastructure.Tracing
 {
+
     public static class SetupTracing
     {
         public static IWebHostBuilder ConfigureTracing(this IWebHostBuilder webHostBuilder, IConfiguration configuration)
@@ -17,18 +18,12 @@ namespace Core.Infrastructure.Tracing
 
                 if (tracingConfig.EnableOpenTracing)
                 {
-                    services.AddJaeger();
+                    services.AddJaeger(configuration);
                     services.AddOpenTracing();   
                 }
             });
             
             return webHostBuilder;
         }
-    }
-
-    public class TracingConfiguration
-    {
-        public bool EnableOpenTracing { get; set; } = true;
-
     }
 }

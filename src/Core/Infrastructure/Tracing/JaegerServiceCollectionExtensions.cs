@@ -10,14 +10,18 @@ using OpenTracing.Util;
 
 namespace Core.Infrastructure.Tracing
 {
+    using Microsoft.Extensions.Configuration;
+
     public static class JaegerServiceCollectionExtensions
     {
-        private static readonly Uri _jaegerUri = new Uri("http://localhost:14268/api/traces");
-
-        public static IServiceCollection AddJaeger(this IServiceCollection services)
+        public static IServiceCollection AddJaeger(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
+
+            var tracingConfig = new TracingConfiguration();
+            configuration.GetSection("Tracing").Bind(tracingConfig);
+            var jaegerUri = new Uri($"http://{tracingConfig.JaegerUrl}:14268/api/traces");
 
             services.AddSingleton<ITracer>(serviceProvider =>
             {
@@ -41,7 +45,7 @@ namespace Core.Infrastructure.Tracing
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
                 options.IgnorePatterns.Add(request =>  request.RequestUri.ToString().Contains("/api/traces") 
-                                                       ||  _jaegerUri.IsBaseOf(request.RequestUri));
+                                                       ||  jaegerUri.IsBaseOf(request.RequestUri));
             });
 
             return services;

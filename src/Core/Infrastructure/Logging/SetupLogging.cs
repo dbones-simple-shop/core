@@ -12,17 +12,21 @@ namespace Core.Infrastructure.Logging
             
             return builder.UseSerilog((builderContext, config) =>
             {
-                var logger = builderContext.Configuration.GetSection("Logging").Get<LoggingConfiguration>().Logger;
+                var loggerConfig = builderContext.Configuration.GetSection("Logging").Get<LoggingConfiguration>();
 
                 config
                     .MinimumLevel.Information()
                     .Enrich.FromLogContext();
 
-                if (logger == "fluentd")
+                if (loggerConfig.Logger == "fluentd")
                 {
                     config.WriteTo.Console(new ElasticsearchJsonFormatter());
-                }    
-                    
+                }
+                else if (loggerConfig.Logger == "datadog")
+                {
+                    config.WriteTo.DatadogLogs(loggerConfig.DataDogApiKey);
+                }
+
                 else
                 {
                     config.WriteTo.Console();    

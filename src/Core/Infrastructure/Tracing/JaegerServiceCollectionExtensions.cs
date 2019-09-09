@@ -55,7 +55,8 @@ namespace Core.Infrastructure.Tracing
             // Prevent endless loops when OpenTracing is tracking HTTP requests to Jaeger.
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
-                options.IgnorePatterns.Add(request =>  request.RequestUri.ToString().Contains("/api/traces"));
+                options.IgnorePatterns.Add(request =>  request.RequestUri.ToString().ToLower().Contains("/api/traces"));
+                options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().EndsWith("hc"));
             });
 
             return services;

@@ -29,11 +29,12 @@ namespace Core.Infrastructure.Tracing
                 return tracer;
             });
 
-            // Prevent endless loops when OpenTracing is tracking HTTP requests to Jaeger.
+            // Prevent endless loops when OpenTracing is tracking HTTP requests to opentracing.
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
                 options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().Contains("/api/traces"));
                 options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().EndsWith("hc"));
+                options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().Contains("datadoghq"));
             });
 
             return services;

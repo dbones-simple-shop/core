@@ -54,6 +54,7 @@ namespace Core.Infrastructure.MassTransit.HealthCheck
 
         public Task StartFaulted(IBus bus, Exception exception)
         {
+            _logger.LogWarning("StartFaulted", exception);
             _state.IsRunning = false;
             return Task.CompletedTask;
         }
@@ -66,12 +67,14 @@ namespace Core.Infrastructure.MassTransit.HealthCheck
 
         public Task PostStop(IBus bus)
         {
+            _logger.LogInformation("Stopped");
             _state.IsRunning = false;
             return Task.CompletedTask;
         }
 
         public Task StopFaulted(IBus bus, Exception exception)
         {
+            _logger.LogWarning("StopFaulted", exception);
             _state.IsRunning = false;
             return Task.CompletedTask;
         }

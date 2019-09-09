@@ -68,8 +68,8 @@ namespace Core.Infrastructure.MassTransit
 			            });
 
                         //healthcheck part 2
-                        ILogger<HealthCheckBusObserver> logger = provider.GetService<ILogger<HealthCheckBusObserver>>();
-                        cfg.ConnectBusObserver(new HealthCheckBusObserver(busConnectionState, logger));
+                        ILogger<HealthCheckBusObserver> healthCheckLogger = provider.GetService<ILogger<HealthCheckBusObserver>>();
+                        cfg.ConnectBusObserver(new HealthCheckBusObserver(busConnectionState, healthCheckLogger));
 
                     }));
 		            

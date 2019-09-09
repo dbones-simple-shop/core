@@ -22,5 +22,7 @@ namespace Core.Infrastructure.MassTransit
         /// the endpoint name, use the name of the application in order to make senese.
         /// </summary>
         public string ReceiveEndpoint { get; set; }
+
+        public string Tracing { get; set; } = "DiagnosticListener"; //opentrace
     }
 }

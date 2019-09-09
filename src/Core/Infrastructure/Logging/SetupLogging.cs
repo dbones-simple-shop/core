@@ -71,14 +71,6 @@ namespace Core.Infrastructure.Logging
                 return Task.CompletedTask;
             }
 
-            
-
-            static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-            {
-                // Log the exception, display it, etc
-                Debug.WriteLine((e.ExceptionObject as Exception).Message);
-            }
-
             public Task StopAsync(CancellationToken cancellationToken)
             {
                 return Task.CompletedTask;

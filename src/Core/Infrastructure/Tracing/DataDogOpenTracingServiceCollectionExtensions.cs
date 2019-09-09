@@ -2,6 +2,7 @@ namespace Core.Infrastructure.Tracing
 {
     using System;
     using System.Reflection;
+    using Datadog.Trace;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using OpenTracing;

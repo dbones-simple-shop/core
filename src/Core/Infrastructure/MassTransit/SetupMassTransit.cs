@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Infrastructure.MassTransit
 {
+    using System.Diagnostics;
     using HealthCheck;
 
     public static class SetupMassTransit
@@ -58,10 +59,21 @@ namespace Core.Infrastructure.MassTransit
 				            h.Username(busConfig.Username);
 				            h.Password(busConfig.Password);
 			            });
+
+                        //opentracing
+                        if (busConfig.Tracing == "DiagnosticListener")
+                        {
+                            var source = new DiagnosticListener("Masstrasit.Rabbit");
+                            cfg.UseDiagnosticsActivity(source);
+                        }
+                        else
+                        {
+                            //works with Jaeger
+                            cfg.PropagateOpenTracingContext();
+                        }
                         
-			            cfg.PropagateOpenTracingContext();
-			            
-			            cfg.ReceiveEndpoint(host, busConfig.ReceiveEndpoint, e =>
+
+                        cfg.ReceiveEndpoint(host, busConfig.ReceiveEndpoint, e =>
 			            {
 				            e.UseMessageRetry(x => x.Interval(10, new TimeSpan(0,0,0,0,500)));    
 				            e.ConfigureConsumer(provider, consumerTypes.ToArray());

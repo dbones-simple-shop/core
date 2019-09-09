@@ -13,12 +13,18 @@ namespace Core.Infrastructure.Tracing
             {
                 var tracingConfig = new TracingConfiguration();
                 configuration.GetSection("Tracing").Bind(tracingConfig);
-                
 
-                if (tracingConfig.EnableOpenTracing)
+                if (!tracingConfig.EnableOpenTracing) return;
+
+                services.AddOpenTracing();
+
+                if (tracingConfig.Tracer == "jaeger")
                 { 
-                    services.AddOpenTracing();
                     services.AddJaeger(configuration);
+                }
+                else
+                {
+                    services.AddDataDog(configuration);
                 }
             });
             

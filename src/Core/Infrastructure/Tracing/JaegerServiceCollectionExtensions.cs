@@ -10,6 +10,7 @@ namespace Core.Infrastructure.Tracing
     using OpenTracing.Contrib.NetCore.CoreFx;
     using OpenTracing.Util;
     using Microsoft.Extensions.Configuration;
+    using OpenTracing.Propagation;
 
     public static class JaegerServiceCollectionExtensions
     {
@@ -47,6 +48,12 @@ namespace Core.Infrastructure.Tracing
                         .Build();
                 }
 
+                Datadog.Trace.OpenTracing.OpenTracingTracerFactory.CreateTracer();
+                var settings = Datadog.Trace.Configuration.TracerSettings.FromDefaultSources();
+                var trace = new Datadog.Trace.Tracer(settings);
+
+
+
                 GlobalTracer.Register(tracer);
 
                 return tracer;
@@ -55,12 +62,11 @@ namespace Core.Infrastructure.Tracing
             // Prevent endless loops when OpenTracing is tracking HTTP requests to Jaeger.
             services.Configure<HttpHandlerDiagnosticOptions>(options =>
             {
-                options.IgnorePatterns.Add(request =>  request.RequestUri.ToString().ToLower().Contains("/api/traces"));
+                options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().Contains("/api/traces"));
                 options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().EndsWith("hc"));
             });
 
             return services;
         }
     }
-
 }

@@ -19,6 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Datadog.Trace" Version="1.6.2" />
+    <PackageReference Include="Datadog.Trace.OpenTracing" Version="1.6.2" />
     <PackageReference Include="Jaeger" Version="0.3.4" />
     <PackageReference Include="Marten" Version="3.7.0" />
     <PackageReference Include="MassTransit" Version="5.5.5" />

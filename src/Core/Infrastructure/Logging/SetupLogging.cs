@@ -13,6 +13,7 @@ namespace Core.Infrastructure.Logging
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Serilog.Events;
 
     public static class SetupLogging 
     {
@@ -31,6 +32,13 @@ namespace Core.Infrastructure.Logging
                 config
                     .MinimumLevel.Information()
                     .Enrich.FromLogContext();
+
+                if (loggerConfig.FilterAspNetCore)
+                {
+                    config.MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost",
+                        LogEventLevel.Warning);
+                }
+
 
                 if (loggerConfig.Logger == "fluentd")
                 {

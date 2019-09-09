@@ -64,6 +64,7 @@ namespace Core.Infrastructure.Tracing
             {
                 options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().Contains("/api/traces"));
                 options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().EndsWith("hc"));
+                options.IgnorePatterns.Add(request => request.RequestUri.ToString().ToLower().Contains("datadoghq"));
             });
 
             return services;

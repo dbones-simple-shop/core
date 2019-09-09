@@ -55,13 +55,14 @@ namespace Core.Infrastructure.MassTransit
         }
 
         public Task PrePublish<T>(PublishContext<T> context) where T : class
-        { 
+        {
+            _logger.LogInformation($"BUS publishing {typeof(T).FullName}, correlationId: {context.CorrelationId}");
             return Task.CompletedTask;
         }
 
         public Task PostPublish<T>(PublishContext<T> context) where T : class
         {
-            _logger.LogInformation($"BUS publishing {typeof(T).FullName}, correlationId: {context.CorrelationId}");
+            _logger.LogInformation($"BUS published {typeof(T).FullName}, correlationId: {context.CorrelationId}");
             return Task.CompletedTask;
         }
 

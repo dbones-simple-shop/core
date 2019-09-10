@@ -18,9 +18,12 @@ namespace Core.Infrastructure.Tracing
 
                 services.AddOpenTracing();
 
-                if (tracingConfig.Tracer == "jaeger")
+                var isJaeger = tracingConfig.Tracer.ToLower() == "jaeger";
+                var useAgent = tracingConfig.Tracer.ToLower().Contains("agent");
+
+                if (isJaeger || useAgent)
                 { 
-                    services.AddJaeger(configuration);
+                    services.AddJaeger(configuration, useAgent);
                 }
                 else
                 {

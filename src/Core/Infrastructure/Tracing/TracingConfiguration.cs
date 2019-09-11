@@ -15,5 +15,7 @@ namespace Core.Infrastructure.Tracing
 
         public string DataDogUrl { get; set; } = "localhost";
 
+        public string ServiceName  { get; set; }
+
     }
 }

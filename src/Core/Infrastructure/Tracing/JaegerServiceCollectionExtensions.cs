@@ -24,9 +24,7 @@ namespace Core.Infrastructure.Tracing
                 var tracingConfig = new TracingConfiguration();
                 configuration.GetSection("Tracing").Bind(tracingConfig);
 
-                
-
-                string serviceName = Assembly.GetEntryAssembly().GetName().Name;
+                string serviceName = tracingConfig.ServiceName ?? Assembly.GetEntryAssembly().GetName().Name;
                 ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 ITracer tracer;
 

@@ -31,8 +31,8 @@ namespace Core.Infrastructure.Tracing
                 //HACK TIME
                 var jaegerUri = $"http://{tracingConfig.JaegerUrl}:14268/api/traces";
                 var useLocalSettigns = jaegerUri.ToString().Contains("localhost");
-
-                if (!useAgent && !useLocalSettigns)
+                
+                if (false)
                 {
                     //use the collector
                     Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
@@ -42,7 +42,7 @@ namespace Core.Infrastructure.Tracing
                     tracer = config.GetTracer();
                 }
 
-                if (useAgent)
+                if (true)
                 {
                     //use the agent
                     Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
@@ -62,10 +62,6 @@ namespace Core.Infrastructure.Tracing
                         .WithSampler(sampler)
                         .Build();
                 }
-
-                Datadog.Trace.OpenTracing.OpenTracingTracerFactory.CreateTracer();
-                var settings = Datadog.Trace.Configuration.TracerSettings.FromDefaultSources();
-                var trace = new Datadog.Trace.Tracer(settings);
 
 
 

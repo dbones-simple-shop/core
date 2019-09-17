@@ -29,30 +29,9 @@ namespace Core.Infrastructure.Tracing
                 ITracer tracer;
 
                 //HACK TIME
-                var jaegerUri = $"http://{tracingConfig.JaegerUrl}:14268/api/traces";
-                var useLocalSettigns = jaegerUri.ToString().Contains("localhost");
+                var useLocalSettigns = tracingConfig.JaegerUrl?.Contains("localhost");
                 
-                if (false)
-                {
-                    //use the collector
-                    Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
-                    Environment.SetEnvironmentVariable("JAEGER_ENDPOINT", jaegerUri);
-                    Environment.SetEnvironmentVariable("JAEGER_SAMPLER_TYPE", "const");
-                    var config = Jaeger.Configuration.FromEnv(loggerFactory);
-                    tracer = config.GetTracer();
-                }
-
-                if (true)
-                {
-                    //use the agent
-                    Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
-                    Environment.SetEnvironmentVariable("JAEGER_AGENT_HOST", tracingConfig.JaegerAgent);
-                    Environment.SetEnvironmentVariable("JAEGER_AGENT_PORT", "6831");
-                    Environment.SetEnvironmentVariable("JAEGER_SAMPLER_TYPE", "const");
-                    var config = Jaeger.Configuration.FromEnv(loggerFactory);
-                    tracer = config.GetTracer();
-                }
-                else
+                if(!useAgent && useLocalSettigns)
                 {
                     //use lcoalhost defaults.
                     ISampler sampler = new ConstSampler(sample: true);
@@ -61,10 +40,32 @@ namespace Core.Infrastructure.Tracing
                         .WithLoggerFactory(loggerFactory)
                         .WithSampler(sampler)
                         .Build();
+                    
+                    GlobalTracer.Register(tracer);
+
+                    return tracer;
+                }
+                
+                //ok we will try and connect to an external jaeger setup                 
+                if (useAgent)
+                {
+                    //use the agent
+                    Environment.SetEnvironmentVariable("JAEGER_AGENT_HOST", tracingConfig.JaegerAgent);
+                    Environment.SetEnvironmentVariable("JAEGER_AGENT_PORT", "6831");
                 }
 
-
-
+                else
+                {   
+                    //use the collector
+                    var jaegerUri = $"http://{tracingConfig.JaegerUrl}:14268/api/traces";
+                    Environment.SetEnvironmentVariable("JAEGER_ENDPOINT", jaegerUri);
+                }
+                
+                Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
+                Environment.SetEnvironmentVariable("JAEGER_SAMPLER_TYPE", "const");
+                
+                var config = Jaeger.Configuration.FromEnv(loggerFactory);
+                tracer = config.GetTracer();
                 GlobalTracer.Register(tracer);
 
                 return tracer;
